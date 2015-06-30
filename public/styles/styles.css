@@ -177,3 +177,15 @@ welcome.html styles
 #sconfirm {
   height: 35px;
 }
+
+#btn_signup {
+  width: 75px;
+  height: 25px;
+  margin-top: 10px;
+}
+#btn_login {
+  display:block; /* change this from inline-block */
+  width:20%; /* setting the width */
+  margin:0 auto; /* this will center  it */;
+  margin-top: 5px;
+}
