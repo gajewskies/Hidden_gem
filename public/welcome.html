@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome to Hidden Gem</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>	
+
+<div class="Header">
+	<div class="Header-top">
+		<div class="Login-container">
+			<div class="greeting">
+				Welcome To Hidden Gem
+			</div>
+			<input type="text" id="Email-Username" placeholder="Email or Username">
+			<input type="password" id="password" placeholder="Password">
+			<!--<input type="submit" id="login" value="Login" onclick="getValue()">-->
+			<br>
+				<div class="quote">
+					Explore secret get-aways from other Gem hunters!
+				</div>
+		</div>
+	</div>
+</div>
+<div class="main-body">
+	<div class="signup">
+		<div class="signup-title">
+			<p id="p1">Sign Up</p>
+			<p id="p2"> Free to join & takes a just couple of minutes</p>
+		</div>
+		<input type="text" id="firstname" placeholder="First name">
+		<input type="text" id="lastname" placeholder="Last name">
+		<br>
+		<input type="text" id="username" placeholder="Desired username">
+		<br>
+		<input type="text" id="email" placeholder="Email">
+		<br>
+		<input type="password" id="spassword" placeholder="Password">
+		<input type="password" id="sconfirm" placeholder="Confirm password">
+	</div>
+	<div id="slideShowImages">
+		<img src="/slideshow/slideshow_1.jpg" width="640px" height="480px">
+		<img src="/slideshow/slideshow_2.jpg" width="640px" height="480px">
+		<img src="/slideshow/slideshow_3.jpg" width="640px" height="480px">
+	</div>
+</div>
+
+<!--<input type="submit" value="Sign Up" onclick="getValue()">-->
+
+<script src="slideshow.js"></script>
+<script type="text/javascript">
+	function getValue() {
+		user = document.getElementById('Email-Username').value;
+		pass = document.getElementById('password').value;
+		firstname = document.getElementById('firstname').value;
+		lastname = document.getElementById('lastname').value;
+		user = document.getElementById('username').value;
+		email = document.getElementById('email').value;
+		pass = document.getElementById('password').value;
+		confirm = document.getElementById('confirm').value;
+		console.log("[*] Grabbed First name: " + firstname);
+		console.log("[*] Grabbed Last name: " + lastname);
+		console.log("[*] Grabbed Username: " + user);
+		console.log("[*] Grabbed Email: " + email);
+		console.log("[*] Grabbed Password: " + pass);
+		console.log("[*] Grabbed Confirm: " + confirm);
+		console.log("[*] Grabbed username: " + user);
+		console.log("[*] Grabbed Password: " + pass)
+	}
+</script>
+</body>
+</html>
