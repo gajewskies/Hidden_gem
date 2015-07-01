@@ -52,7 +52,12 @@
 <script type="text/javascript">
 	var socket = io();
 	var client = document.getElementById('Email-Username').value;
+	
 	socket.emit('client connected', client);
+
+	socket.on ("current clients", function (clients){
+      console.log('[*] Clients: ', clients)
+    });
 
 	function getLogValue() {
 		user = document.getElementById('Email-Username').value;

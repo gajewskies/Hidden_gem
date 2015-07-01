@@ -23,6 +23,7 @@ io.on('connection', function (socket) {
 
 // Serve static files
 app.use(express.static(__dirname + '/public'));
+app.use('/mods', express.static(__dirname));
 app.use('/styles', express.static(__dirname + '.public'));
 app.use('/slideshow', express.static(__dirname + '/public'));
 
