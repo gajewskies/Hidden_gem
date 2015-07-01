@@ -15,7 +15,7 @@
 			</div>
 			<input type="text" id="Email-Username" placeholder="Email or Username">
 			<input type="password" id="password" placeholder="Password">
-			<input type="submit" id="btn_login" value="Log In" onclick="getValue()">
+			<input type="submit" id="btn_login" value="Log In" onclick="getLogValue()">
 			<div class="quote">
 				Explore secret get-aways from other Gem hunters!
 			</div>
@@ -38,7 +38,7 @@
 		<input type="password" id="spassword" placeholder="Password">
 		<input type="password" id="sconfirm" placeholder="Confirm password">
 		<br>
-		<input type="submit" id="btn_signup" value="Sign Up" onclick="getValue()">
+		<input type="submit" id="btn_signup" value="Sign Up" onclick="getSignValue()">
 	</div>
 	<div id="slideShowImages">
 		<img src="/slideshow/slideshow_1.jpg" width="640px" height="480px">
@@ -48,10 +48,20 @@
 </div>
 
 <script src="slideshow.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
-	function getValue() {
+	var socket = io();
+	var client = document.getElementById('Email-Username').value;
+	socket.emit('client connected', client);
+
+	function getLogValue() {
 		user = document.getElementById('Email-Username').value;
 		pass = document.getElementById('password').value;
+		console.log("[*] Grabbed username: " + user);
+		console.log("[*] Grabbed Password: " + pass)
+	;
+	}
+	function getSignValue() {
 		firstname = document.getElementById('firstname').value;
 		lastname = document.getElementById('lastname').value;
 		user = document.getElementById('username').value;
@@ -59,13 +69,12 @@
 		pass = document.getElementById('password').value;
 		confirm = document.getElementById('confirm').value;
 		console.log("[*] Grabbed First name: " + firstname);
-		console.log("[*] Grabbed Last name: " + lastname);
+		console.log("[*] Grabbed Last name: " + lastname)
 		console.log("[*] Grabbed Username: " + user);
 		console.log("[*] Grabbed Email: " + email);
 		console.log("[*] Grabbed Password: " + pass);
 		console.log("[*] Grabbed Confirm: " + confirm);
-		console.log("[*] Grabbed username: " + user);
-		console.log("[*] Grabbed Password: " + pass)
+
 	}
 </script>
 </body>
