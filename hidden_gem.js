@@ -38,6 +38,16 @@ app.get("/home", function (req, res) {
     console.log('[Get]'.green + ' / home.html');
 });
 
+app.get("/account", function (req, res) {
+    res.sendFile(__dirname + "/public/account.html");
+    console.log('[Get]'.green + ' / account.html');
+});
+
+app.get("/mapbox", function (req, res) {
+    res.sendFile(__dirname + "/public/mapbox.html");
+    console.log('[Get]'.green + ' / mapbox.html');
+});
+
 http.listen(port, "0.0.0.0",  function () {
     console.log("[*]".green + "Server running at http://127.0.0.1:" + port);
 });
