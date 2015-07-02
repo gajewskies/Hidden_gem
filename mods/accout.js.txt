@@ -1,0 +1,619 @@
+MiamiCoder
+
+    Home
+    New Here?
+    Books
+    Articles
+        All
+        Sencha Touch
+        jQuery Mobile
+        Ext JS
+    About
+
+Home » MongoDB Tutorial » Using MongoDB and Mongoose for User Registration, Login and Logout in a Mobile Application
+Using MongoDB and Mongoose for User Registration, Login and Logout in a Mobile Application
+
+November 13, 2014 8 Comments
+1812
+
+This mobile application tutorial shows you how to create a user registration, login and logout backend using MongoDB and Mongoose. This article is part of a series of mobile application development tutorials that I have been publishing on my blog MiamiCoder.com, which shows you how to create a Meeting Room Booking mobile application. This app will be used to browse an inventory of meeting rooms and reserve rooms for conference calls and other types of events.
+
+Using MongoDB and Mongoose for User Registration, Login and Logout in a Mobile Application
+
+The backend that we will create in this article will connect with the user account management screens that we built in a previous chapter of this series. This backend will consist of the following modules:
+
+    Router (using Node.js and Express)
+    Controller
+    Data model to represent a user (using Mongoose)
+    Database (using MongoDB)
+
+The Router receives http requests from the mobile application and forwards them to the Controller, which in turn creates, reads, updates and deletes data models defined with the Mongoose library. The user profiles and sessions information will reside in a MongoDB database. The Router also receives data from the Controller and bundles it in http responses that it sends to the Mobile App.
+
+In this article we will create the Controller, Model and Database modules using Mongoose and MongoDB. We will test the Controller and build the Router in the next article of this series.
+
+Let’s proceed to install the software that we will use to create the Node JS, MongoDB and Mongoose endpoint.
+Installing Node.js
+
+Node.js is a platform for building network apps that you can use to build backend endpoints for your mobile applications. You can get Node.js at node.js.
+
+This tutorial doesn’t require you to have extensive knowledge of Node, but you should try to learn about it as much as you can in order to take full advantage of its capabilities. To start, I would recommend the tutorials over at Node School.
+Installing Express
+
+Express is a framework for building web applications with Node.js. Express’ installation page shows you how to install the framework. In this particular article we will only use the request routing capabilities of Express. In the feature we will take advantage of other features.
+Installing MongoDB
+
+MongoDB is a leading NoSQL database at the time of this writing. In the databases ecosystem, MongoDB falls under the Document Databases category. These are databases where each record and its associated data is thought of as a “document”.
+
+Document Databases have characteristics that make them a good choice for storing unstructured data across multiple servers. There is abundant online documentation on this subject. If you want to learn more, you can start with the Document Databases page on MongoDB’s website.
+
+To install MongoDB you need to head to the downloads page on MongoDB.org and grab the MongoDB installer for your platform. If you haven’t worked with Mongo, I recommend that at a minimum you go over MongoDB’s interactive tutorial so you become familiar with it.
+Installing Mongoose
+
+Mongoose is a JavaScript library that makes it easy to move data between your application and MongoDB databases. It is a layer of abstraction that allows you to create schemas for the data that your application uses, and provides facilities for connecting to MongoDB and validating, saving, updating, deleting and retrieving instances of these schemas.
+
+The picture below will give you an idea of where Mongoose fits in our application’s architecture:
+
+mongoose-mongodb-2
+
+You can find installation instructions and a very good introduction to the library on Mongoose’s Getting Started page.
+Designing the Public Interface of the Controller
+
+The role of the Controller module in our Express backend will be to fulfill requests received from the mobile application:
+
+server-endpoint-activity-1
+
+As at this point in this series of tutorials we are only concerned with the user registration, login and logout features of the application, we will create controller methods to handle these functions. We need the Controller module to respond to the following requests:
+
+    Register user
+    Log on a user
+    Log off a user
+    Initiate a password reset for a user
+    Finalize a password reset for a user
+
+Based on these requests, we will design a Controller with the following public methods.
+
+Controller.register(newUser, callback):
+
+This method will register a new user with the backend by saving the user’s profile in the MongoDB database.
+
+Parameters:
+
+    newUser – The user to register in the database
+    callback – A function that will receive the results of the registration attempt.
+
+Returns:
+
+    callback – The callback function passed in the arguments.
+
+Controller.logon(email, password, callback):
+
+This method will logon a user if the supplied email and password are valid. If the logon attempt succeeds, the method will add the user’s profile to a private “session” variable in the Controller.
+
+Parameters:
+
+    email – The user’s email.
+    password – The user’s password.
+    callback – A function that will receive the results of the logon attempt.
+
+Returns:
+
+    callback – The callback function passed in the arguments.
+
+Controller.logoff():
+
+This method will log off a user by delete the user’s profile data stored in the Controller’s private “session” variable.
+
+Controller.resetPassword(email, callback):
+
+This method will send the user an email containing a password reset link. The link will contain a unique identifier string that will be used in the Controller.resetPasswordFinal method.
+
+Parameters:
+
+    email – The user’s email address.
+    callback – A function that will receive the results of the reset password attempt.
+
+Returns:
+
+    callback – The callback function passed in the arguments.
+
+Controller.resetPasswordFinal(email, newPassword, passwordResetHash, callback):
+
+This method will reset a user’s password.
+
+Parameters:
+
+    email – The user’s email address.
+    newPassword – The user’s new password.
+    passwordResetHash – A unique identifier sent to the user via email from the Controller.resetPassword method.
+    callback – A function that will receive the results of the reset password attempt.
+
+Returns:
+
+    callback – The callback function passed in the arguments.
+
+Controller.setSession(session):
+
+This method will set the Controller’s private “session” variable.
+
+Parameters:
+
+    session – The value for the Controller’s “session” variable.
+
+Controller.getSession():
+
+This method will return a reference to the Controller’s private session variable.
+
+Returns:
+
+    session – The internal “session” variable.
+
+Creating a Model Using Mongoose
+
+As explained in the Mongoose Documentation, the Mongoose model automatically inherits a number of methods (such as create, save, remove and find) that allow us to store and retrieve model instances from a MongoDB database. We will use Mongoose’s help to create a model of a user.
+
+Let’s create the user.js file in the model directory.
+
+directories-5
+
+In the file, we will define the following Mongoose schema:
+1	var mongoose = require('mongoose');
+2	var Schema = mongoose.Schema;
+3	 
+4	var UserSchema = new Schema({
+5	    email: String,
+6	    firstName: String,
+7	    lastName: String,
+8	    passwordHash: String,
+9	    passwordSalt: String
+10	});
+11	 
+12	module.exports = mongoose.model('User', UserSchema);
+
+The model’s properties are the user’s attributes we want to capture (email, first name and last name), as well as a hash of the user’s password and the salt value that we used to create the password’s hash. As you will see later, storing a password’s hash and salt will allow us to authenticate users without needing to store their passwords in our database.
+The ApiResponse Class
+
+I mentioned a Class called ApiResponse in the majority of the methods that make the Controller’s public interface. This is a data transfer Class that will help us move data out of the Controller. Let’s create the api-response.js file in the models directory.
+
+directories-6
+
+In the file, let’s type the following definition:
+1	var ApiResponse = function (cnf) {
+2	    this.success = cnf.success;
+3	    this.extras = cnf.extras;
+4	};
+5	 
+6	module.exports = ApiResponse;
+
+Any request sent to the Controller will eventually produce an ApiResponse instance. As its name indicates, the success property of ApiResponse will signal whether the request succeeded or not. The extras property will be a JavaScript Object containing any additional data that the Controller wants to send out as part of the response.
+The ApiMessages Class
+
+When the success property of the ApiResponse instance is false, the data sent in the extras property can include information about what caused the failure. We will define these causes in a Class that we will call ApiMessages.
+
+Let’s create the api-messages.js file in the models directory.
+
+directories-7
+
+We will define the ApiMessages Class as follows:
+1	var ApiMessages = function () { };
+2	ApiMessages.EMAIL_NOT_FOUND = 0;
+3	ApiMessages.INVALID_PWD = 1;
+4	ApiMessages.DB_ERROR = 2;
+5	ApiMessages.NOT_FOUND = 3;
+6	ApiMessages.EMAIL_ALREADY_EXISTS = 4;
+7	ApiMessages.COULD_NOT_CREATE_USER = 5;
+8	ApiMessages.PASSWORD_RESET_EXPIRED = 6;
+9	ApiMessages.PASSWORD_RESET_HASH_MISMATCH = 7;
+10	ApiMessages.PASSWORD_RESET_EMAIL_MISMATCH = 8;
+11	ApiMessages.COULD_NOT_RESET_PASSWORD = 9;
+12	 
+13	module.exports = ApiMessages;
+
+As the code indicates, we are defining the reasons that can cause a Controller request to fail. They are basically the different error conditions that we anticipate can occur inside the Controller.
+Creating the UserProfileModel Class
+
+The data sent in the extras property of an ApiResponse instance can also include a read-only version of the user’s profile. We will create the UserProfileModel Class to model this entity. Instances of this Class will help us pass user data from the database to the outer layers of the backend, and ultimately the mobile application, without exposing sensitive information such as the password hash and salt values.
+
+In the models folder, let’s create the user-profile.js file.
+
+directories-9
+
+Then, type the UserProfileModel definition:
+1	var UserProfileModel = function(cnf) {
+2	    this.email = cnf.email,
+3	    this.firstName = cnf.firstName,
+4	    this.lastName = cnf.lastName
+5	};
+6	 
+7	module.exports = UserProfileModel;
+
+In the Model we defined three properties to hold the user’s first name, last name and email. This gives us a nice data transfer object that we can send from the Controller out to the mobile app when the mobile app needs to display these data. We are not storing password information in instances of this Model so there is no opportunity for this information to be pulled from the database and sent out as part of an HTTP response.
+Creating the Controller
+
+It’s finally time to turn our attention to the Controller itself. Let’s create the account.js file in the controllers directory.
+
+directories-8
+
+We will declare the Controller as follows:
+1	var AccountController = function (userModel, session, mailer) {
+2	 
+3	    this.crypto = require('crypto');
+4	    this.uuid = require('node-uuid');
+5	    this.ApiResponse = require('../models/api-response.js');
+6	    this.ApiMessages = require('../models/api-messages.js');
+7	    this.UserProfileModel = require('../models/user-profile.js');
+8	    this.userModel = userModel;
+9	    this.session = session;
+10	    this.mailer = mailer;
+11	};
+12	 
+13	module.exports = AccountController;
+
+Notice that we are injecting three dependencies into the Controller. The userModel argument is an instance of the User Mongoose Class that we created a few minutes ago. As you already know, this is an object that knows how to save and retrieve user data from the MondoDB database.
+
+The session argument is an object that the Controller will use to store session data. The mailer argument is a helper object that the Controller will use to send the password reset email to the user.
+
+What we are doing here is using a dependency injection approach by passing to the Controller some of the entities it needs to do its job. This will make it really easy for us to test the Controller using mock objects, without having to instance the database, session and mailer objects that we will use in production. In the next chapter of this tutorial you will see how this is done when we create the tests for the Controller.
+
+We are also declaring a number of variables inside the Controller. The crypto and uuid variables refer to the Node.Crypto and node-uuid modules, which we will use to generate password hashes and unique identifiers needed when we register and log on users. The ApiResponse, ApiMessages and UserProfile internal variables refer to the model Classes with the same names that we created a few minutes ago.
+The Session Getter and Setter Methods
+
+Let’s move on to implementing the Controller’s public interface that we designed earlier. First, we will create the setter and getter methods for the session, immediately below the Controller’s declaration:
+1	AccountController.prototype.getSession = function () {
+2	    return this.session;
+3	};
+4	 
+5	AccountController.prototype.setSession = function (session) {
+6	    this.session = session;
+7	};
+
+We will use these methods to set or grab a reference to the Controller’s session variable.
+The hashPassword Method
+
+We will use this method to create a cryptographically-strong pseudo random hash of a password:
+1	AccountController.prototype.hashPassword = function (password, salt, callback) {       
+2	    // we use pbkdf2 to hash and iterate 10k times by default
+3	    var iterations = 10000,
+4	        keyLen = 64; // 64 bit.
+5	    this.crypto.pbkdf2(password, salt, iterations, keyLen, callback);
+6	};
+
+Within hashPassword, we call crypto.pbkdf2, which uses a pseudorandom function to derive a key of the given length from the given password, salt and number of iterations. Remember that we will save this hash in the database, instead of saving the password in clear text or encrypted. This is a good security measure because it’s very difficult to use the hash to obtain the original password without knowing the function used, salt, iteration and keyLen values.
+The logon Method
+
+Next, we will create the logon method:
+1	AccountController.prototype.logon = function(email, password, callback) {
+2	 
+3	    var me = this;
+4	 
+5	    me.userModel.findOne({ email: email }, function (err, user) {
+6	 
+7	        if (err) {
+8	            return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));
+9	        }
+10	 
+11	        if (user) {
+12	 
+13	            me.hashPassword(password, user.passwordSalt, function (err, passwordHash) {
+14	 
+15	                if (passwordHash == user.passwordHash) {
+16	 
+17	                    var userProfileModel = new me.UserProfileModel({
+18	                        email: user.email,
+19	                        firstName: user.firstName,
+20	                        lastName: user.lastName
+21	                    });
+22	 
+23	                    me.session.userProfileModel = userProfileModel;
+24	 
+25	                    return callback(err, new me.ApiResponse({
+26	                        success: true, extras: {
+27	                            userProfileModel:userProfileModel
+28	                        }
+29	                    }));
+30	                } else {
+31	                    return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.INVALID_PWD } }));
+32	                }
+33	            });
+34	        } else {
+35	            return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.EMAIL_NOT_FOUND } }));
+36	        }
+37	 
+38	    });
+39	};
+
+Inside logon we first create the me variable to hold a reference to the AccountController instance that we can use inside callback functions that we will create inline.
+
+Next, we call the findOne method of the userModel instance to try to find a user with the same email in the MongoDB database. The findMethod is provided by Mongoose. Remember that userModel is an instance of the User Model that we create with Mongoose’s help.
+
+If the call to findOne produces an error, we immediately invoke the callback argument, passing an ApiResponse instance where the success property is set to false and the extra property contains a message that explains that there was a database error.
+
+If the call to findOne produces a user, we proceed to hash the password provided by the user who is attempting to log on, and compare the hash to the password hash of the user that we found in the database. If the hashes are equal, it means that the user attempting to log on provided a valid password and we can move on to create a UserProfile instance and save it to the Controller’s session variable. We then invoke the callback function, setting the response’s success property to true and passing the UserProfile instance in the extras property of the response.
+
+When the hashes don’t match, we invoke the callback function, setting the response’s success property to false and passing an “invalid password” reason in the extras property.
+
+Finally, if the call to findOne does not produce a user, we invoke the callback function with a response where the extras property contains a message indicating that the provided email was not found.
+The logoff Method
+
+We will use the logoff method to terminate a user’s session:
+1	AccountController.prototype.logoff = function () {
+2	    if (this.session.userProfileModel) delete this.session.userProfileModel;
+3	    return;
+4	};
+
+To terminate the session we simply destroy the UserProfile instance that we previously saved in the Controller’s session variable.
+The register Method
+
+The Controller’s register method allows a user to register with the application:
+1	AccountController.prototype.register = function (newUser, callback) {
+2	    var me = this;
+3	    me.userModel.findOne({ email: newUser.email }, function (err, user) {
+4	 
+5	        if (err) {
+6	            return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));
+7	        }
+8	 
+9	        if (user) {
+10	            return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.EMAIL_ALREADY_EXISTS } }));
+11	        } else {
+12	 
+13	            newUser.save(function (err, user, numberAffected) {
+14	 
+15	                if (err) {
+16	                    return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));
+17	                }
+18	                     
+19	                if (numberAffected === 1) {
+20	 
+21	                    var userProfileModel = new me.UserProfileModel({
+22	                        email: user.email,
+23	                        firstName: user.firstName,
+24	                        lastName: user.lastName
+25	                    });
+26	 
+27	                    return callback(err, new me.ApiResponse({
+28	                        success: true, extras: {
+29	                            userProfileModel: userProfileModel
+30	                        }
+31	                    }));
+32	                } else {
+33	                    return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.COULD_NOT_CREATE_USER } }));
+34	                }            
+35	 
+36	            });
+37	        }
+38	 
+39	    });
+40	};
+
+The first step that we take in register is to check if a user with the same email address of the user that is attempting to register exists in the database. As we did in the logon method, if there is a database error we will immediately invoke the callback function and send out an ApiResponse instance explaining that there was a database error.
+
+If we find an user that has the same email address of the user that is attempting to register, we also stop the registration process, as we cannot have two users with the same email address. In this case the extras property of the ApiResponse instance that we send out contains a message explaining that the email address already exists.
+
+If we don’t find the email address in the database, we proceed to save the new user by invoking save method (inherited from Mongooose) of the User Class. The save method produces a numberAffected argument in its callback function. We check numberAffected to make sure that the new user was saved. If numberAffected is 1, we create a UserProfile instance and send it out embedded in an ApiResponse object. If numberAffected is not 1, we produce an ApiResponse indicating that the registration failed.
+The resetPassword Method
+
+The resetPassword method is the first step of the password reset workflow that we defined in the Mobile Application User Registration, Login and Logout Screens tutorial of this series. The method consists of the following code:
+1	AccountController.prototype.resetPassword = function (email, callback) {
+2	    var me = this;
+3	    me.userModel.findOne({ email: email }, function (err, user) {
+4	 
+5	        if (err) {
+6	            return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));
+7	        }
+8	 
+9	        // Save the user's email and a password reset hash in session. We will use
+10	        var passwordResetHash = me.uuid.v4();
+11	        me.session.passwordResetHash = passwordResetHash;
+12	        me.session.emailWhoRequestedPasswordReset = email;
+13	 
+14	        me.mailer.sendPasswordResetHash(email, passwordResetHash);
+15	 
+16	        return callback(err, new me.ApiResponse({ success: true, extras: { passwordResetHash: passwordResetHash } }));
+17	    })
+18	};
+
+In order to initiate a password reset sequence, users need to provide their email address. Inside resetPassword we use the provided email address to retrieve the user’s record from the database. If the record exists, we create a unique identifier called passwordResetHash, and pass this identifier and the user’s email address to the mailer object’s sendPasswordResetHash method. This method sends a message to the user, containing the unique identifier and a password reset link that they can use to change their password. We will implement the mailer module in the next chapter of this tutorial.
+
+Inside resetPassword we also save the password reset hash and the user’s email in the Controller’s session variable so we can later compare them to the values provided by the user in the final step of the password reset process.
+
+If the database doesn’t have a record for the provided email address, we return an ApiResponse whose extras property explains that the email was not found.
+The resetPasswordFinal Method
+
+Users will invoke this method when they access a special web page using the “password reset” link inside the email that they will receive after they perform the first step of the password reset process. Here’s the code for the method:
+1	AccountController.prototype.resetPasswordFinal = function (email, newPassword, passwordResetHash, callback) {
+2	    var me = this;
+3	    if (!me.session || !me.session.passwordResetHash) {
+4	        return callback(null, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.PASSWORD_RESET_EXPIRED } }));
+5	    }
+6	 
+7	    if (me.session.passwordResetHash !== passwordResetHash) {
+8	        return callback(null, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.PASSWORD_RESET_HASH_MISMATCH } }));
+9	    }
+10	 
+11	    if (me.session.emailWhoRequestedPasswordReset !== email) {
+12	        return callback(null, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.PASSWORD_RESET_EMAIL_MISMATCH } }));
+13	    }
+14	 
+15	    var passwordSalt = this.uuid.v4();
+16	 
+17	    me.hashPassword(newPassword, passwordSalt, function (err, passwordHash) {
+18	 
+19	        me.userModel.update({ email: email }, { passwordHash: passwordHash, passwordSalt: passwordSalt }, function (err, numberAffected, raw) {
+20	 
+21	            if (err) {
+22	                return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));
+23	            }
+24	 
+25	            if (numberAffected < 1) {
+26	 
+27	                return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.COULD_NOT_RESET_PASSWORD } }));
+28	            } else {
+29	                return callback(err, new me.ApiResponse({ success: true, extras: null }));
+30	            }               
+31	        });
+32	    });
+33	};
+
+To reset their password a user will need to provide their email address and a new password, along with the password reset hash that we sent them in the password reset email generated from the resetPassword method. We will save the user from having to type the password reset hash by embedding the hash in the link inside the password reset email. In the next chapter of this series we will create the Mailer Class and implement the email features.
+
+Inside resetPasswordFinal, we first check that the password reset hash is also saved in the Controller’s session variable. If the hash does not exist, we return an ApiResponse whose extras property explains that the password reset period expired. As a security measure, we want to limit the period of time during which a user can reset their password to the length of a session timeout period.
+
+If the password reset hash value stored in the session and the value supplied by the user do not match, we will assume that the user who requested the password reset and the user who is providing the new password are not the same. In such a case we return an ApiResponse explaining that there is a mismatch of the hashes.
+
+The same logic applies when the email value stored in the session and the value supplied by the user do not match, in which case we return an ApiResponse explaining that there is a mismatch of the email addresses.
+
+If the password reset hash and email address validations are successful, we proceed to hash the new password and save it by calling the User model’s update method, which is inherited from Mongoose. The update method returns the number of records affected by the update operation. We check this value and return an ApiResponse that signals to the outside world if the update operation succeeded or not.
+Summary and Next Steps
+
+We just began building the backend for a Meeting Room Booking application that we defined in the first chapter of this series. This is a MongoDB and Mongoose backend paired to a Node.js and Express web server.
+
+Our focus in this article was building a Controller module that will handle the user registration, login and logout features of the application. We implemented the Controller’s public interface, along with a number of helper Classes that will allow the Controller to do its work.
+
+In the next chapter of this tutorial we will turn our attention to testing the Controller, which will take us through choosing a testing library and implementing the tests for the Controller’s features.
+
+Make sure to sign up for MiamiCoder’s newsletter so you can be among the first to know when next part of this tutorial is available.
+Download the Source Code
+
+Download the MongoDB and Mongoose backend tutorial here: MongoDB and Mongoose backend for mobile application
+All the Chapters of this Series
+
+You can find all the published parts of this series here: The Meeting Room Booking App Tutorial.
+Stay Tuned
+
+Don’t miss out on the updates! Make sure to sign up for my newsletter so you can get MiamiCoder’s new articles and updates sent free to your inbox.
+1812
+Related Articles
+
+    Sencha Touch Book Supports Sencha Touch 2.4
+
+    My Sencha Touch book is now updated for Sencha Touch 2.4. The book will teach…
+    New eBook - Building a Sencha Touch Application
+
+    You can build a Sencha Touch application in minutes. My new book "Building a Sencha Touch Application" will teach you how to create a Sencha Touch app from scratch. Check it out!
+    Sencha Touch 2 Models - Creating and Editing Model Instances
+
+    In this Sencha Touch 2 tutorial we are going to to learn how to create a model, and how to edit model instances.
+
+Tagged With: MongoDB Tutorial, Mongoose Tutorial, NodeJS Tutorial 8 Comments
+Comments
+
+    Anuj Chhabria says
+
+    November 15, 2014 at 9:25 AM
+
+    Can this be done using MYSQL?
+    Reply
+
+        Jorge says
+
+        November 17, 2014 at 3:34 PM
+
+        Sure. I will add it to my articles queue.
+        Reply
+
+    José Fuentes says
+
+    May 29, 2015 at 12:12 PM
+
+    How can we sure that the password parameter in the logon method was sent by the app and not be other source (like any Rest client)? I’m trying to use the ideas of your post, but I found this vulnerability. Am I wrong?
+    Reply
+
+        Jorge says
+
+        May 29, 2015 at 3:37 PM
+
+        You can mitigate this by having the app send a “shared secret” to the server (API key, App identifier, etc.), securing the communications channel (SSL, etc.) and taking other measures. This issue exists in web applications as well, and generally in all client-server systems. If the server endpoint is public, anyone can try to talk to it.
+        Reply
+
+    Fitsum says
+
+    June 1, 2015 at 12:18 PM
+
+    What is your recommendation in which database to use, MySQL or MongoDB?
+    Reply
+
+        Jorge says
+
+        June 1, 2015 at 1:21 PM
+
+        These are different types of databases (relational vs. document). The two are very popular, but you need to look at your specific needs and see which one would work better. I prefer MySQL because I’m more familiar with it, and the type of line of business apps that I work with is better served with MySQL.
+
+        See this comparison for more info: https://www.mongodb.com/mongodb-and-mysql-compared
+        Reply
+
+    Abhishek says
+
+    June 21, 2015 at 9:17 AM
+
+    how to run this application that is pushed by you on git hub
+    are you using any build tool like gulp grunt
+    Reply
+
+        Jorge says
+
+        June 23, 2015 at 6:44 AM
+
+        You can run it with Node.js. I’m not using any build tools int this article.
+        Reply
+
+Leave a Comment
+
+Your email address will not be published. Required fields are marked *
+
+Name *
+
+Email *
+
+Website
+
+Comment
+
+Get Your Free Mobile User Interface Recipes Kit
+Free Mobile User Interface Recipes Kit
+
+Sign up to receive my posts via email and get a FREE Mobile User Interface Recipes Kit with mockups packages for three real-world mobile apps. You will save hours of design time when you use the kit to build your own apps.
+Email Address:
+
+
+MiamiCoder will never share your email address.
+Get My Books
+
+The beginner's guide to Sencha Touch apps
+
+“By far the best Touch 2 example I have seen.”
+
+The beginner's guide to jQuery Mobile apps
+
+Book: How to Build a jQuery Mobile Application
+Topics
+
+    » jQuery Mobile Tutorials
+    » Sencha Touch Tutorials
+    » Ext JS Tutorials
+    » Books
+    » Tools
+    » .Net Tutorials
+    » BlackBerry Tutorials
+    » iOS Tutorials
+    » Node.js Tutorials
+    » Android Training
+    » BlackBerry Training
+    » iOS Training
+
+Archives
+Archives
+Search
+Get Your Free Mobile User Interface Recipes Kit
+Free Mobile User Interface Recipes Kit
+Contact MiamiCoder
+
+     Email me at miamicoder[AT]gmail.com
+     Follow @MiamiCoder
+
+
+
+Don’t Miss the Newsletter
+Receive free updates in your inbox.
+Your address is safe with MiamiCoder.
+
+Copyright © 2015 MiamiCoder · The opinions expressed herein do not represent the views of my employers in any way · Log in
