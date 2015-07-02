@@ -1,3 +1,7 @@
+/*
+Styles for home.html
+*/
+
 @import url(http://fonts.googleapis.com/css?family=Raleway);
 #menu,
 #menu ul,
@@ -189,4 +193,3 @@ welcome.html styles
   margin:0 auto; /* this will center  it */;
   margin-top: 5px;
 }
-
