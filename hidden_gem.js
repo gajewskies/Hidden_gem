@@ -11,8 +11,19 @@ var http = require("http").Server(app);
 var io = require("socket.io")(http);
 var port = 44291;
 
+var clients = [];
+io.on('connection', function (socket) {
+	io.emit('current clients', clients);
+	socket.on('client conencted', function (client) {
+		clients.push(client);
+		io.emit('current clients', clients);
+	});
+	console.log("[*] A client has connected!");
+});
+
 // Serve static files
 app.use(express.static(__dirname + '/public'));
+app.use('/mods', express.static(__dirname));
 app.use('/styles', express.static(__dirname + '.public'));
 app.use('/slideshow', express.static(__dirname + '/public'));
 
