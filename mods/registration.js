@@ -1,4 +1,4 @@
-var Parse = require("http://www.parsecdn.com/js/parse-1.3.5.min.js ");
+var Parse = require("parse");
 
 var user = new Parse.User();
 user.set("username", "my name");
