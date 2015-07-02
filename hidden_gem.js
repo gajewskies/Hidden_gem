@@ -9,7 +9,7 @@ var express = require("express");
 var app = express();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
-var port = 8421;
+var port = 44291;
 
 // Serve static files
 app.use(express.static(__dirname + '/public'));
@@ -20,7 +20,7 @@ app.get("/", function (req, res) {
     res.sendFile(__dirname + "/public/welcome.html");
 });
 
-http.listen(port, function () {
+http.listen(port, "0.0.0.0",  function () {
     console.log("[*] Server running at http://127.0.0.1:" + port);
 });
 
