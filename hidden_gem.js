@@ -9,6 +9,7 @@ var express = require("express");
 var app = express();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
+var colors = require('colors');
 var port = 44291;
 
 var clients = [];
@@ -18,7 +19,7 @@ io.on('connection', function (socket) {
 		clients.push(client);
 		io.emit('current clients', clients);
 	});
-	console.log("[*] A client has connected!");
+	console.log("[*]".green + "A client has connected!");
 });
 
 // Serve static files
@@ -29,9 +30,15 @@ app.use('/slideshow', express.static(__dirname + '/public'));
 
 app.get("/", function (req, res) {
     res.sendFile(__dirname + "/public/welcome.html");
+    console.log('[Get]'.green + ' / welcome.html');
+});
+
+app.get("/home", function (req, res) {
+    res.sendFile(__dirname + "/public/home.html");
+    console.log('[Get]'.green + ' / home.html');
 });
 
 http.listen(port, "0.0.0.0",  function () {
-    console.log("[*] Server running at http://127.0.0.1:" + port);
+    console.log("[*]".green + "Server running at http://127.0.0.1:" + port);
 });
 
