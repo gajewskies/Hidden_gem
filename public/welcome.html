@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="/styles/styles.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="//www.parsecdn.com/js/parse-1.4.2.min.js"></script>
 </head>
 <body>	
 
@@ -29,17 +30,19 @@
 			<p id="p1">Sign Up</p>
 			<p id="p2"> Free to join & takes a just couple of minutes</p>
 		</div>
-		<input type="text" id="firstname" placeholder="First name">
-		<input type="text" id="lastname" placeholder="Last name">
-		<br>
-		<input type="text" id="username" placeholder="Desired username">
-		<br>
-		<input type="text" id="email" placeholder="Email">
-		<br>
-		<input type="password" id="spassword" placeholder="Password">
-		<input type="password" id="sconfirm" placeholder="Confirm password">
-		<br>
-		<input type="submit" id="btn_signup" value="Sign Up" onclick="getSignValue()">
+		<form class="signup-form" id="registration">
+			<input type="text" id="firstname" placeholder="First name">
+			<input type="text" id="lastname" placeholder="Last name">
+			<br>
+			<input type="text" id="username" placeholder="Desired username">
+			<br>
+			<!--<input type="text" id="email" placeholder="Email">-->
+			<br>
+			<input type="password" id="spassword" placeholder="Password">
+			<input type="password" id="sconfirm" placeholder="Confirm password">
+			<br>
+			<input type="submit" id="btn_signup" value="Sign Up" onclick="getSignValue()">
+		</form>
 	</div>
 	<div id="slideShowImages">
 		<img src="/slideshow/slideshow_1.jpg" width="640px" height="480px">
@@ -50,6 +53,7 @@
 
 <script src="slideshow.js"></script>
 <script src="/socket.io/socket.io.js"></script>
+<script src="registration.js"></script>
 <script type="text/javascript">
 	var socket = io();
 	var client = document.getElementById('Email-Username').value;
@@ -71,7 +75,7 @@
 		firstname = document.getElementById('firstname').value;
 		lastname = document.getElementById('lastname').value;
 		user = document.getElementById('username').value;
-		email = document.getElementById('email').value;
+		//email = document.getElementById('email').value;
 		pass = document.getElementById('password').value;
 		confirm = document.getElementById('confirm').value;
 		console.log("[*] Grabbed First name: " + firstname);
