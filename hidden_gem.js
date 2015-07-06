@@ -13,6 +13,7 @@ var colors = require('colors');
 var port = 44291;
 
 var clients = [];
+
 io.on('connection', function (socket) {
 	io.emit('current clients', clients);
 	socket.on('client conencted', function (client) {
