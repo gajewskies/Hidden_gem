@@ -16,9 +16,11 @@
 			<div class="greeting">
 				Welcome To Hidden Gem
 			</div>
-			<input type="text" id="Email-Username" placeholder="Email or Username">
-			<input type="password" id="password" placeholder="Password">
-			<input type="submit" id="btn_login" value="Log In" onclick="">
+			<form role="form" action="/home" method="post">
+				<input type="text" id="Email-Username" placeholder="Email or Username">
+				<input type="password" id="password" placeholder="Password">
+				<input type="submit" id="btn_login" value="Log In" onclick="">
+			</form>
 			<div class="quote">
 				Explore secret get-aways from other Gem hunters!
 			</div>
@@ -31,7 +33,7 @@
 			<p id="p1">Sign Up</p>
 			<p id="p2"> Free to join & takes a just couple of minutes</p>
 		</div>
-		<form class="signup-form" id="registration">
+		<form role='form' action="/welcome" method="post">
 			<input type="text" id="firstname" placeholder="First name">
 			<input type="text" id="lastname" placeholder="Last name">
 			<br>
@@ -54,7 +56,6 @@
 
 <script src="slideshow.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="registration.js"></script>
 <script type="text/javascript">
 	var socket = io();
 	var client = document.getElementById('Email-Username').value;
