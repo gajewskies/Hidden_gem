@@ -1,0 +1,195 @@
+/*
+Styles for home.html
+*/
+
+@import url(http://fonts.googleapis.com/css?family=Raleway);
+#menu,
+#menu ul,
+#menu ul li,
+#menu ul li a {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+  line-height: 1;
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#menu:after,
+#menu > ul:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+#menu {
+  width: auto;
+  border-bottom: 3px solid #47c9af;
+  font-family: Raleway, sans-serif;
+  line-height: 1;
+}
+#menu ul {
+  background: #ffffff;
+}
+#menu > ul > li {
+  float: left;
+}
+#menu.align-center > ul {
+  font-size: 0;
+  text-align: center;
+}
+#menu.align-center > ul > li {
+  display: inline-block;
+  float: none;
+}
+#menu.align-right > ul > li {
+  float: right;
+}
+#menu.align-right > ul > li > a {
+  margin-right: 0;
+  margin-left: -4px;
+}
+#menu > ul > li > a {
+  z-index: 2;
+  padding: 18px 25px 12px 25px;
+  font-size: 15px;
+  font-weight: 400;
+  text-decoration: none;
+  color: #444444;
+  -webkit-transition: all .2s ease;
+  -moz-transition: all .2s ease;
+  -ms-transition: all .2s ease;
+  -o-transition: all .2s ease;
+  transition: all .2s ease;
+  margin-right: -4px;
+}
+#menu > ul > li.active > a,
+#menu > ul > li:hover > a,
+#menu > ul > li > a:hover {
+  color: #ffffff;
+}
+#menu > ul > li > a:after {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  width: 100%;
+  height: 120%;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  content: "";
+  -webkit-transition: all .2s ease;
+  -o-transition: all .2s ease;
+  transition: all .2s ease;
+  -webkit-transform: perspective(5px) rotateX(2deg);
+  -webkit-transform-origin: bottom;
+  -moz-transform: perspective(5px) rotateX(2deg);
+  -moz-transform-origin: bottom;
+  transform: perspective(5px) rotateX(2deg);
+  transform-origin: bottom;
+}
+#menu > ul > li.active > a:after,
+#menu > ul > li:hover > a:after,
+#menu > ul > li > a:hover:after {
+  background: #47c9af;
+}
+
+
+/*
+welcome.html styles
+*/
+
+.Header-top {
+      width: 100%;
+      height: 200px;
+      background-image: url("/header-top.png");
+      background-size: 100% auto;
+      background-position: center;
+      position: absolute;
+    }
+.Header {
+  height: 200px;
+    width: 100%;
+    position: relative;
+}
+.Login-container {
+  margin-left: auto;
+    margin-right: auto;
+    width: 478px;
+    margin-top: 35px;
+}
+.greeting {
+  font-size: 40px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: #fff;
+}
+.quote {
+  font-size: 20px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: #fff;
+}
+.signup {
+  position: absolute;
+  right: 100px;
+  width: 407px;
+  border-radius: 25px;
+  padding: 20px;
+  border: 2px solid #000;
+  border-color: #585858 ;
+  margin-top: 30px;
+}
+.main-body {
+  height: 510px;
+  background-color: #EDF0F5;
+}
+#slideShowImages {
+  position: absolute;
+  left: 100px;
+  width: 640px;
+  height: 480px;
+  border-radius: 25px;
+  top: 30px;
+}
+#p1 {
+  font-size: 30px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  margin-bottom: -3px
+}
+#p2 {
+  font-size: 15px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  margin-top: -3px;
+}
+#Email-Username,
+#password {
+  border:2px solid #456879;
+  border-radius:10px;
+  height: 22px;
+  width: 230px;
+}
+#firstname,
+#lastname,
+#username,
+#email,
+#spassword,
+#sconfirm {
+  height: 35px;
+}
+
+#btn_signup {
+  width: 75px;
+  height: 25px;
+  margin-top: 10px;
+}
+#btn_login {
+  display:block; /* change this from inline-block */
+  width:20%; /* setting the width */
+  margin:0 auto; /* this will center  it */;
+  margin-top: 5px;
+}
