@@ -8,5 +8,5 @@ app.set('port', process.env.PORT || 44291);
 
 var server = app.listen(app.get('port'), function() {
 	debug('[*]'.green + ' Express server listening on port ' + server.address().port);
-	console.log('[*]'.green + ' Express server listening on port ' + server.address().port);
+	console.log('[*]'.green + ' Server running at http://127.0.0.1:' + server.address().port);
 });
