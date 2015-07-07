@@ -2,8 +2,10 @@
 <html>
 <head>
 	<title>Acount profile</title>
-	<link rel="stylesheet" href="../public/styles/styles.css">
+	<link rel="stylesheet" href="/styles.css">
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
 </head>
 <body>
 
@@ -20,11 +22,32 @@
 <div id="toolbar">
 	<div id='menu'>
 		<ul>
-		   <li class='active'><a href='home.html'>Home</a></li>
+		   <li class='active'><a href='home'>Home</a></li>
 		   <li><a href='#'>Settings</a></li>
 		   <li><a href='#'>Log Out</a></li>
 		</ul>
 	</div>
+</div>
+
+<div class="account_container">
+	<h1><%= title %></h1>
+	<ul class="collection">
+		<li class="collection-item">
+			<span class="title">Name</span>
+			<p class="flow-text"> <%= user.firstName %> <%= user.lastName %>
+			</p>
+		</li>
+		<li class="collection-item">
+			<span class="title">Email</span>
+			<p class="flow-text"> <%= user.email %>
+			</p>
+		</li>
+		<li class="collection-item">
+			<span class="title">Username</span>
+			<p class="flow-text"> <%= user.username %>
+			</p>
+		</li>
+	</ul>
 </div>
 </body>
 </html>

@@ -38,12 +38,14 @@ module.exports = function(passport){
 	});
 
 	/* GET Accounts Page */
-	router.get('/account', function(req, res) {
-		res.render('account', {
-			title: 'HiddenGem-Account',
-			message: req.flash('message')
-		});
+	router.get('/account', isAuthenticated, function(req, res) {
+	    res.render('account', {
+	        title: 'Account Page',
+	        user: req.user
+    	});
 	});
+
+
 
 	/* Handle Logout */
 	router.get('/logout', function(req, res) {
