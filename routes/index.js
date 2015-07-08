@@ -45,7 +45,13 @@ module.exports = function(passport){
     	});
 	});
 
-
+	/* GET Setings Page */
+	router.get('/settings', isAuthenticated, function(req, res) {
+	    res.render('settings', {
+	        title: 'Settings Page',
+	        user: req.user
+    	});
+	});
 
 	/* Handle Logout */
 	router.get('/logout', function(req, res) {
