@@ -305,14 +305,29 @@ Styles for Accounts page
   color: #000;
 }
 #left-half-account {
-  width: 45%;
+  width: 30%;
   float: left;
   padding-right: 10px;
   padding-left: 10px;
+  border-radius: 3px 3px 3px 3px;
+  border-width: 1px 1px 1px 1px;
+  border-style: solid solid solid solid;
+  border-color: #D8D8D8 #D8D8D8;
+  overflow-y: scroll;
+  height: 375px;
 }
 #right-half-account {
-  width: 45%;
+  width: 62%;
   float: left;
+  margin-left: 5px;
   padding-right: 10px;
   padding-left: 10px;
+  border-radius: 3px 3px 3px 3px;
+  border-width: 1px 1px 1px 1px;
+  border-style: solid solid solid solid;
+  border-color: #D8D8D8 #D8D8D8;
+}
+#favorite-gem {
+  height: 379px;
+  width: 426px;
 }
