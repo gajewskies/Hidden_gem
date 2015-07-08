@@ -27,27 +27,49 @@
 		   <li><a href='#'>Log Out</a></li>
 		</ul>
 	</div>
+
+	<div id="main-container">
+		<div id="container">
+			<div id="account-info">
+				<a href="/settings" aria-label="Change your avatar" id="avatar-container">
+					<img alt="" class="avatar" src="avatar.jpeg" height="230" width="230">
+				</a>
+				<h1 class="account-names">
+    				<span class="account-fullname" itemprop="name">
+    					<%= user.firstName %> <%= user.lastName %>
+    				</span>
+   					<span class="account-username" itemprop="additionalName">
+   						<%= user.username %>
+				    </span>
+				    <span class="account-email" itemprop="additionalEmail">
+   						<%= user.email %>
+				    </span>
+				</h1>
+				<div class="account-stats">
+					<a class="account-stat">
+						<strong class="account-stat-count">6</strong>
+						<span class="text-muted">
+						    Followers
+						</span>
+					</a>
+					<a class="account-stat">
+						<strong class="account-stat-count">6</strong>
+						<span class="text-muted">
+						    Reveals
+						</span>
+					</a>
+					<a class="account-stat">
+						<strong class="account-stat-count">6</strong>
+						<span class="text-muted">
+						    Following
+						</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </div>
 
-<div class="account_container">
-	<h1><%= title %></h1>
-	<ul class="collection">
-		<li class="collection-item">
-			<span class="title">Name</span>
-			<p class="flow-text"> <%= user.firstName %> <%= user.lastName %>
-			</p>
-		</li>
-		<li class="collection-item">
-			<span class="title">Email</span>
-			<p class="flow-text"> <%= user.email %>
-			</p>
-		</li>
-		<li class="collection-item">
-			<span class="title">Username</span>
-			<p class="flow-text"> <%= user.username %>
-			</p>
-		</li>
-	</ul>
-</div>
 </body>
 </html>
