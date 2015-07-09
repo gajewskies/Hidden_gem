@@ -331,3 +331,11 @@ Styles for Accounts page
   height: 379px;
   width: 426px;
 }
+
+/*
+Styles for Settings page
+*/
+
+#upload {
+  margin-top: 100px;
+}
