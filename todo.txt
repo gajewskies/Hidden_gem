@@ -1,0 +1,13 @@
+- Find a way to eliminate elements from being resized on the welcome.ejs page
+-- position elements in the center of the page at 100% 
+-- When resizing the page elements should not move
+=====================================================================
+- find a way to push the marker i lay on the home page to an array
+-- store the markers in the array by there longitude and latitude
+=====================================================================
+- organize the accounts page
+-- find a way to take a snap shot of the map and put it in the favorite-gem container
+-- find a way to store the favorite in the database
+-- find a way to store markers i laid out on the reveals container
+-- find a way to store the avatar in the database and change when clicked
+=====================================================================
