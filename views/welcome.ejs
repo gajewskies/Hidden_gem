@@ -10,47 +10,49 @@
 </head>
 <body>	
 
-<div class="Header">
-	<div class="Header-top">
-		<div class="Login-container">
-			<div class="greeting">
-				Welcome To Hidden Gem
+<div id="wrap">
+	<div class="Header">
+		<div class="Header-top">
+			<div class="Login-container">
+				<div class="greeting">
+					Welcome To Hidden Gem
+				</div>
+				<form class='form-signin' action='/login' method="POST">
+					<input type="text" name="username" id="Email-Username" placeholder="Username">
+					<input type="password" name="password" id="password" placeholder="Password">
+					<input type="submit" id="btn_login" value="Log In">
+				</form>
+				<div class="quote">
+					Explore secret get-aways from other Gem hunters!
+				</div>
 			</div>
-			<form class='form-signin' action='/login' method="POST">
-				<input type="text" name="username" id="Email-Username" placeholder="Username">
-				<input type="password" name="password" id="password" placeholder="Password">
-				<input type="submit" id="btn_login" value="Log In">
+		</div>
+	</div>
+	<div class="main-body">
+		<div id="slideShowImages">
+			<img src="/slideshow/slideshow_1.jpg" width="640px" height="480px">
+			<img src="/slideshow/slideshow_2.jpg" width="640px" height="480px">
+			<img src="/slideshow/slideshow_3.jpg" width="640px" height="480px">
+		</div>
+		<div class="signup">
+			<div class="signup-title">
+				<p id="p1">Sign Up</p>
+				<p id="p2"> Free to join & takes a just couple of minutes</p>
+			</div>
+			<form class="form-signin" action='/signup' method="POST">
+				<input type="text" name="username" id="username" placeholder="Username" required autofocus>
+				<br>
+				<input type="password" name="password" id="spassword" placeholder="Password" required>
+				<br>
+				<input type="text" name="email" id="email" placeholder="Email" required>
+				<br>
+				<input type="text" name="firstName" id="firstname" placeholder="First name" required>
+				<br>
+				<input type="text" name="lastName" id="lastname" placeholder="Last name" required>
+				<br>
+				<input type="submit" id="btn_signup" value="Sign Up">
 			</form>
-			<div class="quote">
-				Explore secret get-aways from other Gem hunters!
-			</div>
 		</div>
-	</div>
-</div>
-<div class="main-body">
-	<div class="signup">
-		<div class="signup-title">
-			<p id="p1">Sign Up</p>
-			<p id="p2"> Free to join & takes a just couple of minutes</p>
-		</div>
-		<form class="form-signin" action='/signup' method="POST">
-			<input type="text" name="username" id="username" placeholder="Username" required>
-			<br>
-			<input type="password" name="password" id="spassword" placeholder="Password" required>
-			<br>
-			<input type="text" name="email" id="email" placeholder="Email" required>
-			<br>
-			<input type="text" name="firstName" id="firstname" placeholder="First name" required autofocus>
-			<br>
-			<input type="text" name="lastName" id="lastname" placeholder="Last name" required>
-			<br>
-			<input type="submit" id="btn_signup" value="Sign Up">
-		</form>
-	</div>
-	<div id="slideShowImages">
-		<img src="/slideshow/slideshow_1.jpg" width="640px" height="480px">
-		<img src="/slideshow/slideshow_2.jpg" width="640px" height="480px">
-		<img src="/slideshow/slideshow_3.jpg" width="640px" height="480px">
 	</div>
 </div>
 
