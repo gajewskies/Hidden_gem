@@ -33,3 +33,8 @@ function GemPhoto () {
 	return photo;
 }
 
+function findGem () {
+	var findTerm = prompt("Search term?");
+	return findTerm;
+}
+

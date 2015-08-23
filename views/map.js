@@ -92,5 +92,4 @@ function removeGemLoc() {
 	markers = [];
 }
 
-
 google.maps.event.addDomListener(window, 'load', initialize);
